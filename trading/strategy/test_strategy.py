@@ -1,4 +1,4 @@
-from components.indicator.trendline import TrendLine
+from trading.indicator.trendline import TrendLine
 import sys
 import backtrader as bt
 

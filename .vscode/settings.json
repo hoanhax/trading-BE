@@ -3,5 +3,8 @@
   "python.formatting.autopep8Args": [
     "--indent-size=2"
   ],
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true
+  }
 }

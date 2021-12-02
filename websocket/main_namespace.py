@@ -1,4 +1,5 @@
 import socketio
+from config.enum import MainEnum
 
 
 class MainNamespace(socketio.AsyncNamespace):
@@ -8,5 +9,8 @@ class MainNamespace(socketio.AsyncNamespace):
   def on_disconnect(self, sid):
     pass
 
-  async def on_my_event(self, sid, data):
-    await self.emit('my_response', data)
+  async def on_get_candlestickets(self, sid, data):
+    pass
+
+  async def get_orders(self, sid, data):
+    pass
