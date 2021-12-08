@@ -7,7 +7,7 @@ import sys  # To find out the script name (in argv[0])
 
 import backtrader as bt
 
-from components.strategy.test_strategy import TestStrategy
+from trading.strategy.test_strategy import TestStrategy
 
 if __name__ == '__main__':
   # Create a cerebro entity

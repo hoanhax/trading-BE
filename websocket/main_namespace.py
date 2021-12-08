@@ -1,5 +1,16 @@
+from trading.strategy.test_strategy import TestStrategy
+from trading.trading import Trading
+
 import socketio
 from config.enum import MainEnum
+import os
+
+from websocket.util import Util
+
+import logging
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
+
+log = logging.getLogger(__name__)
 
 
 class MainNamespace(socketio.AsyncNamespace):
@@ -9,8 +20,22 @@ class MainNamespace(socketio.AsyncNamespace):
   def on_disconnect(self, sid):
     pass
 
+  def on_get_data(self, sid, data):
+    util = Util()
+    absolutePath = os.path.join(os.getcwd(), 'data/EURUSD_D1.csv')
+    log.debug(absolutePath)
+    response = util.readData(absolutePath)
+    return response
+    # self.emit('')
+    # pass
+
   async def on_get_candlestickets(self, sid, data):
     pass
 
-  async def get_orders(self, sid, data):
+  async def on_get_orders(self, sid, data):
     pass
+
+  async def on_run_trading(self, sid, data):
+    absolutePath = os.path.join(os.getcwd(), 'data/EURUSD_D1.csv')
+    trading = Trading(absolutePath, TestStrategy)
+    trading.run()

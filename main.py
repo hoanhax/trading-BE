@@ -1,14 +1,15 @@
-from trading.trading import Trading
-from trading.strategy.test_strategy import TestStrategy
-
-from websocket.handler import SocketHandler
-import socketio
-from aiohttp import web
-import aiohttp_cors
 from strawberry.aiohttp.views import GraphQLView
-sio = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
+import aiohttp_cors
+from aiohttp import web
+import socketio
+import os
+from websocket.handler import SocketHandler
+import logging
+logging.basicConfig(level=logging.WARNING)
+# logging.basicConfig(level=os.environ.get("LOGLEVEL", "WARNING"))
+logging.getLogger('asyncio').setLevel(logging.WARNING)
 
-trading = Trading('./data/EURUSD_D1.csv', TestStrategy)
+sio = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
 
 app = web.Application()
 sio.attach(app)
@@ -16,8 +17,5 @@ sio.attach(app)
 socketHandler = SocketHandler(sio)
 socketHandler.register()
 
-
 if __name__ == '__main__':
-  print('main')
-  web.run_app(app)
-  trading.run()
+  web.run_app(app, access_log=None)
