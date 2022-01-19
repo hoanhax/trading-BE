@@ -38,7 +38,7 @@ def analyze(items):
   '''
   Add first value, and add trend value to this item. We will store trend value for the first value of the trend
   example result = [{close: 1, date: xxx, open: xxx, trend: UP}, {close: 5, date: xxx, open: xxx, trend: DOWN}, {close: 3, date: xxx, open: xxx, trend: UP}]
-  it mean from close:1 -> close: 5 is trend UP, from close:5 -> close:3 is trend DOWN
+  it mean from close:1 -> close:5 is trend UP, from close:5 -> close:3 is trend DOWN
   '''
   items[0]['trend'] = lastTrend
   result.append(items[0])

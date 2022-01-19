@@ -1,0 +1,108 @@
+version: '3.1'
+services:
+  server:
+    # container_name: server_web
+    build:
+      context: ../
+      dockerfile: ./docker/python.Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8585:8000
+    networks:
+      - trade
+    command: ["adev", "runserver"]
+    env_file:
+      - ./dev.env
+    # environment:
+    #  - NODE_ENV=development
+    volumes:
+      - ../:/app/
+      # - /app/node_modules
+    working_dir: /app
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "100"
+
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - '8086:8086'
+    env_file:
+      - dev.env
+    volumes:
+      - /Users/hoanha/docker/influxdb-storage:/var/lib/influxdb
+      - ../data:/home/influxdb/data
+    environment:
+      - INFLUXDB_DB=${INFLUXDB_DB}
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+    networks:
+      - trade
+
+  chronograf:
+    image: chronograf:latest
+    ports:
+      - '127.0.0.1:8888:8888'
+    env_file:
+      - dev.env
+    volumes:
+      - /Users/hoanha/docker/chronograf-storage:/var/lib/chronograf
+    depends_on:
+      - influxdb
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_USERNAME=${INFLUXDB_USERNAME}
+      - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
+    networks:
+      - trade
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - /Users/hoanha/docker/grafana-storage:/var/lib/grafana
+      - /Users/hoanha/docker/grafana-provisioning/:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+    env_file:
+      - dev.env
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    networks:
+      - trade
+
+  mongo:
+    build:
+      context: ../
+      dockerfile: ./docker/mongo.Dockerfile
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 4yW9wCsNYNc3RYqh
+      MONGO_INITDB_DATABASE: trade
+      APP_MONGO_HOST: localhost
+      MONGO_PORT: 27017
+      APP_MONGO_USER: trade
+      APP_MONGO_PASS: 4yW9wCsNYNc3RYqh
+      APP_MONGO_DB: trade
+    ports:
+      - 27020:27017
+    volumes:
+      - /Users/hoanha/docker/mongodb/trade:/data/db
+    networks:
+      - trade
+
+networks:
+  trade:
+    driver: "bridge"
+
+# volumes:
+#   influxdb-storage:
+#   chronograf-storage:
+#   grafana-storage:
+
+#https://github.com/jkehres/docker-compose-influxdb-grafana

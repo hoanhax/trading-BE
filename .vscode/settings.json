@@ -3,9 +3,15 @@
   "python.formatting.autopep8Args": [
     "--indent-size=2"
   ],
+  "python.autoComplete.extraPaths": [
+    "./path-to-your-code"
+  ],
   "editor.formatOnSave": true,
   "files.exclude": {
     "**/__pycache__": true
   },
-  "python.pythonPath": "/Users/hoanha/.pyenv/versions/trading/bin/python"
+  "python.pythonPath": "/Users/hoanha/.pyenv/versions/trading/bin/python",
+  "python.analysis.extraPaths": [
+    "./path-to-your-code"
+  ]
 }
