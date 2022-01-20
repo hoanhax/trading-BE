@@ -35,7 +35,6 @@ class MarketData ():
                   |> range(start: {start}, stop: {stop})\
                   |> filter(fn: (r) => r.symbol == "{symbol}")\
                   |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value") '
-      # query = 'from(bucket: "forex") |> range(start: -30d)'
       tables = query_api.query(org=self.org, query=query)
       results = []
       log.info(len(tables))
