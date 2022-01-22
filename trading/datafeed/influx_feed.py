@@ -9,10 +9,8 @@ import datetime as dt
 from datetime import date, datetime, timedelta
 
 
-import influxdb_client
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
-from json import dumps
 
 
 import os
@@ -62,9 +60,6 @@ class InfluxDB(feed.DataBase):
     fromdate = self.p.fromdate if self.p.fromdate else (now - delta)
     todate = self.p.todate if self.p.todate else now
 
-    log.info(fromdate)
-    log.info(todate)
-
     start = fromdate.strftime("%Y-%m-%dT%H:%M:%SZ")
     stop = todate.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -103,8 +98,3 @@ class InfluxDB(feed.DataBase):
     self.l.volume[0] = bar['volume']
 
     return True
-
-  def json_serial(self, obj):
-    if isinstance(obj, (datetime, date)):
-      return obj.isoformat()
-    raise TypeError("Type %s not serializable" % type(obj))
