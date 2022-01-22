@@ -1,3 +1,4 @@
+from trading.backtest.backtest import BackTest
 from trading.strategy.test_strategy import TestStrategy
 from trading.trading import Trading
 from websocket.market_handler import MarketHandler
@@ -47,3 +48,7 @@ class MainNamespace(socketio.AsyncNamespace):
     absolutePath = os.path.join(os.getcwd(), 'data/EURUSD_D1.csv')
     trading = Trading(absolutePath, TestStrategy)
     trading.run()
+
+  async def on_run_trading_01(self, sid, data):
+    backtest = BackTest()
+    backtest.test01()

@@ -1,15 +1,11 @@
-import logging
-import os
 from trading.indicator.trendline import TrendLine
 import sys
 import backtrader as bt
 
 sys.path.append('component/indicator')
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
-log = logging.getLogger(__name__)
 
 
-class TestStrategy(bt.Strategy):
+class Strategy01(bt.Strategy):
   params = (
       ('maperiod', 15),
   )
@@ -17,7 +13,7 @@ class TestStrategy(bt.Strategy):
   def log(self, txt, dt=None):
     ''' Logging function fot this strategy'''
     dt = dt or self.datas[0].datetime.date(0)
-    # log.info('%s, %s' % (dt.isoformat(), txt))
+    print('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     # Keep a reference to the "close" line in the data[0] dataseries
