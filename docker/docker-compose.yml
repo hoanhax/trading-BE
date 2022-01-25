@@ -22,7 +22,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "200k"
+        max-size: "20k"
         max-file: "100"
 
   influxdb:

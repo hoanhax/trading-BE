@@ -47,13 +47,14 @@ class InfluxDB(feed.DataBase):
     # # except InfluxDBClientError as err:
     # except:
     #   print('Failed to establish connection to InfluxDB')
-
+    log.info('start read data')
+    log.info(datetime.now())
     ndb = InfluxDBClient(
         url=self.p.url, token=self.p.token, org=self.p.org)
 
     query_api = ndb.query_api()
 
-    delta = timedelta(days=12)
+    delta = timedelta(days=365)
 
     now = datetime.now()
 
@@ -62,27 +63,37 @@ class InfluxDB(feed.DataBase):
 
     start = fromdate.strftime("%Y-%m-%dT%H:%M:%SZ")
     stop = todate.strftime("%Y-%m-%dT%H:%M:%SZ")
-
+    log.info(start)
+    log.info(stop)
     query = f' from(bucket:"forex")\
                   |> range(start: {start}, stop: {stop})\
                   |> filter(fn: (r) => r.symbol == "{self.p.symbol}")\
-                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value") '
-
+                  |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")\
+                  |> duplicate(column: "_time", as: "datetime") '
+    # query = f' from(bucket:"forex")\
+    #               |> range(start: {start}, stop: {stop})\
+    #               |> filter(fn: (r) => r.symbol == "{self.p.symbol}")\
+    #               |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value") '
     tables = query_api.query(org=self.p.org, query=query)
-    results = []
-    for table in tables:
-      for record in table.records:
-        data = {
-            "datetime": record.get_time(),
-            "symbol": record.values.get('symbol'),
-            "open": record.values.get('open'),
-            "high": record.values.get('high'),
-            "close": record.values.get('close'),
-            "low": record.values.get('low'),
-            "volume": record.values.get('volume'),
-        }
-        results.append(data)
-    self.biter = iter(results)
+    log.info('end read data')
+    log.info(datetime.now())
+    # results = []
+    # for table in tables:
+    #   for record in table.records:
+    #     data = {
+    #         "datetime": record.get_time(),
+    #         "symbol": record.values.get('symbol'),
+    #         "open": record.values.get('open'),
+    #         "high": record.values.get('high'),
+    #         "close": record.values.get('close'),
+    #         "low": record.values.get('low'),
+    #         "volume": record.values.get('volume'),
+    #     }
+    #     results.append(data)
+    log.info('end convert data')
+    # self.biter = iter(results)
+    self.biter = iter(tables[0])
+    log.info(datetime.now())
 
   def _load(self):
     try:

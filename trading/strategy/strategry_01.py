@@ -1,8 +1,12 @@
+import logging
+import os
 from trading.indicator.trendline import TrendLine
 import sys
 import backtrader as bt
 
 sys.path.append('component/indicator')
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
+log = logging.getLogger(__name__)
 
 
 class Strategy01(bt.Strategy):
@@ -13,7 +17,7 @@ class Strategy01(bt.Strategy):
   def log(self, txt, dt=None):
     ''' Logging function fot this strategy'''
     dt = dt or self.datas[0].datetime.date(0)
-    print('%s, %s' % (dt.isoformat(), txt))
+    log.info('%s, %s' % (dt.isoformat(), txt))
 
   def __init__(self):
     # Keep a reference to the "close" line in the data[0] dataseries
@@ -51,7 +55,7 @@ class Strategy01(bt.Strategy):
     if order.status in [order.Completed]:
       if order.isbuy():
         self.log(
-            'BUY EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+            'BUY EXECUTED, Price: %.5f, Cost: %.5f, Comm %.5f' %
             (order.executed.price,
              order.executed.value,
              order.executed.comm))
@@ -59,7 +63,7 @@ class Strategy01(bt.Strategy):
         self.buyprice = order.executed.price
         self.buycomm = order.executed.comm
       else:  # Sell
-        self.log('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' %
+        self.log('SELL EXECUTED, Price: %.5f, Cost: %.5f, Comm %.5f' %
                  (order.executed.price,
                   order.executed.value,
                   order.executed.comm))
@@ -76,12 +80,12 @@ class Strategy01(bt.Strategy):
     if not trade.isclosed:
       return
 
-    self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+    self.log('OPERATION PROFIT, GROSS %.5f, NET %.5f' %
              (trade.pnl, trade.pnlcomm))
 
   def next(self):
     # Simply log the closing price of the series from the reference
-    self.log('Close, %.2f' % self.dataclose[0])
+    # self.log('Close, %.5f' % self.dataclose[0])
 
     # Check if an order is pending ... if yes, we cannot send a 2nd one
     if self.order:
@@ -94,7 +98,7 @@ class Strategy01(bt.Strategy):
       if self.dataclose[0] > self.sma[0]:
 
         # BUY, BUY, BUY!!! (with all possible default parameters)
-        self.log('BUY CREATE, %.2f' % self.dataclose[0])
+        self.log('BUY CREATE, %.5f' % self.dataclose[0])
 
         # Keep track of the created order to avoid a 2nd order
         self.order = self.buy()
@@ -103,7 +107,7 @@ class Strategy01(bt.Strategy):
 
       if self.dataclose[0] < self.sma[0]:
         # SELL, SELL, SELL!!! (with all possible default parameters)
-        self.log('SELL CREATE, %.2f' % self.dataclose[0])
+        self.log('SELL CREATE, %.5f' % self.dataclose[0])
 
         # Keep track of the created order to avoid a 2nd order
         self.order = self.sell()

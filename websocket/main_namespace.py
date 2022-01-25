@@ -35,7 +35,7 @@ class MainNamespace(socketio.AsyncNamespace):
     # pass
     market_handler = MarketHandler()
     response = market_handler.query_data(None)
-    log.info(response)
+    # log.info(response)
     return response
 
   async def on_get_candlestickets(self, sid, data):
@@ -52,3 +52,7 @@ class MainNamespace(socketio.AsyncNamespace):
   async def on_run_trading_01(self, sid, data):
     backtest = BackTest()
     backtest.test01()
+
+  async def on_run_trading_02(self, sid, data):
+    backtest = BackTest()
+    backtest.test02()
