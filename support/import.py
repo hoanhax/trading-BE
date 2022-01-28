@@ -17,7 +17,6 @@ def import_content(filepath, collection_name='forex', db_name='market'):
 
   collist = mng_db.list_collection_names()
   # Create collection if does not exist
-  print(collist)
   if collection_name not in collist:
     col = mng_db.create_collection(
         name=collection_name,
@@ -66,6 +65,7 @@ def import_content(filepath, collection_name='forex', db_name='market'):
 def addMetadata(item):
   item['metadata'] = {"symbol": "EURUSD", "base": "EUR", "quote": "USD"}
   item['datetime'] = datetime.fromtimestamp(item['datetime']/1000)
+  item['created_at'] = datetime.now()
   return item
 
 

@@ -2,8 +2,9 @@ from trading.trading import Trading
 from trading.datafeed.influx_feed import InfluxDB
 from trading.datafeed.mongo_feed import MongoDB
 
+import backtrader as bt
 from config import setting
-
+import datetime
 from trading.strategy.strategry_01 import Strategy01
 
 
@@ -27,9 +28,12 @@ class BackTest:
         username=mongodb['username'],
         password=mongodb['password'],
         port=mongodb['port'],
+        timeframe=bt.TimeFrame.Minutes,
+        fromdate=datetime.datetime(2022, 1, 13),
+        todate=datetime.datetime(2022, 1, 14),
         database=mongodb['database'],
         symbol=mongodb['symbol']
     )
     trading = Trading(data, Strategy01)
-    trading.initialize()
+    # trading.initialize()
     trading.run()

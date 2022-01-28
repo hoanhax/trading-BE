@@ -3,7 +3,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import backtrader as bt
 import backtrader.feed as feed
-from backtrader import date2num
+from backtrader import date2num, num2date
 
 from datetime import datetime, timedelta
 
@@ -42,13 +42,13 @@ class MongoDB(feed.DataBase):
     log.info('start read data')
     log.info(datetime.now())
     uri = "mongodb://%s:%s@%s:%s" % (
-        quote_plus(self.p.username), quote_plus(self.p.password), quote_plus(self.p.host), "27017")
+        quote_plus(self.p.username), quote_plus(self.p.password), quote_plus(self.p.host), self.p.port)
     log.info(uri)
     mng_client = pymongo.MongoClient(uri)
     mng_db = mng_client[self.p.database]
     db_collection = mng_db.get_collection(self.p.collection)
 
-    delta = timedelta(days=365)
+    delta = timedelta(days=14)
     now = datetime.now()
 
     fromdate = self.p.fromdate if self.p.fromdate else (now - delta)
@@ -56,10 +56,11 @@ class MongoDB(feed.DataBase):
     log.info("fromdate: %s todate: %s", fromdate, todate)
     result = db_collection.find(
         {
-            "$and": [{"datetime": {"$gt": fromdate}},
-                     {"datetime": {"$lt": todate}}]
+            "$and": [{"datetime": {"$gte": fromdate}},
+                     {"datetime": {"$lte": todate}}]
         }
     )
+    log.info(result[0])
     # for i in result:
     #   log.info(i)
 
@@ -70,15 +71,18 @@ class MongoDB(feed.DataBase):
   def _load(self):
     try:
       bar = next(self.biter)
+
     except StopIteration:
       return False
-    # log.info(bar)
+    log.info(bar)
     # log.info(date2num(bar['datetime']))
-    self.l.datetime[0] = date2num(bar['datetime'])
-    self.l.open[0] = bar['open']
-    self.l.high[0] = bar['high']
-    self.l.low[0] = bar['low']
-    self.l.close[0] = bar['close']
-    self.l.volume[0] = bar['volume']
+    self.lines.datetime[0] = date2num(bar['datetime'])
+    self.lines.open[0] = bar['open']
+    self.lines.high[0] = bar['high']
+    self.lines.low[0] = bar['low']
+    self.lines.close[0] = bar['close']
+    self.lines.volume[0] = bar['volume']
+
+    log.info(num2date(self.lines.datetime[0]))
 
     return True

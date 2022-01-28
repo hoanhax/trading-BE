@@ -3,6 +3,7 @@ import datetime  # For datetime objects
 import os.path  # To manage paths
 import sys  # To find out the script name (in argv[0])
 import logging
+import pytz
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 log = logging.getLogger(__name__)
 
@@ -26,4 +27,5 @@ class Trading:
 
   def run(self):
     log.debug('run trading')
-    self.cerebro.run()
+    timezone = pytz.timezone('UTC')
+    self.cerebro.run(tz=timezone)
