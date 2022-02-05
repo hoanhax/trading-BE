@@ -2,8 +2,9 @@ import backtrader as bt
 import datetime  # For datetime objects
 import os.path  # To manage paths
 import sys  # To find out the script name (in argv[0])
-import logging
 import pytz
+
+import logging
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 log = logging.getLogger(__name__)
 
@@ -14,9 +15,9 @@ class Trading:
     self.strategy = strategy
     self.cerebro = bt.Cerebro()
     self.cash = cash
-    self.initialize()
+    self._initialize()
 
-  def initialize(self):
+  def _initialize(self):
     self.cerebro.addstrategy(self.strategy)
 
     # Add the Data Feed to Cerebro

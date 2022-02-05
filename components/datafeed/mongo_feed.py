@@ -39,11 +39,8 @@ class MongoDB(feed.DataBase):
 
   def start(self):
     super(MongoDB, self).start()
-    log.info('start read data')
-    log.info(datetime.now())
     uri = "mongodb://%s:%s@%s:%s" % (
         quote_plus(self.p.username), quote_plus(self.p.password), quote_plus(self.p.host), self.p.port)
-    log.info(uri)
     mng_client = pymongo.MongoClient(uri)
     mng_db = mng_client[self.p.database]
     db_collection = mng_db.get_collection(self.p.collection)
@@ -60,13 +57,10 @@ class MongoDB(feed.DataBase):
                      {"datetime": {"$lte": todate}}]
         }
     )
-    log.info(result[0])
     # for i in result:
     #   log.info(i)
 
     self.biter = iter(result)
-    log.info('end read data')
-    log.info(datetime.now())
 
   def _load(self):
     try:
@@ -74,15 +68,10 @@ class MongoDB(feed.DataBase):
 
     except StopIteration:
       return False
-    log.info(bar)
-    # log.info(date2num(bar['datetime']))
     self.lines.datetime[0] = date2num(bar['datetime'])
     self.lines.open[0] = bar['open']
     self.lines.high[0] = bar['high']
     self.lines.low[0] = bar['low']
     self.lines.close[0] = bar['close']
     self.lines.volume[0] = bar['volume']
-
-    log.info(num2date(self.lines.datetime[0]))
-
     return True

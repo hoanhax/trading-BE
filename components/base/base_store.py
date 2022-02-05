@@ -1,0 +1,2 @@
+class BaseStore:
+  pass

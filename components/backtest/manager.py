@@ -1,14 +1,16 @@
-from trading.trading import Trading
-from trading.datafeed.influx_feed import InfluxDB
-from trading.datafeed.mongo_feed import MongoDB
+from components.trading import Trading
+from components.datafeed.influx_feed import InfluxDB
+from components.datafeed.mongo_feed import MongoDB
 
 import backtrader as bt
 from config import setting
 import datetime
-from trading.strategy.strategry_01 import Strategy01
+from components.strategy.strategry_01 import Strategy01
+
+DEFAULT_CASH = 1000
 
 
-class BackTest:
+class Manager:
   def test01(self):
     influxdb = setting.influxdb
     data = InfluxDB(
@@ -17,6 +19,7 @@ class BackTest:
         token=influxdb['token'],
         symbol='EURUSD'
     )
+    # Creating backtest record to store in db
     trading = Trading(data, Strategy01)
     trading.initialize()
     trading.run()

@@ -6,10 +6,9 @@ import os.path  # To manage paths
 import sys  # To find out the script name (in argv[0])
 
 import backtrader as bt
-from trading.datafeed.mongo_feed import MongoDB
+from components.datafeed.mongo_feed import MongoDB
 
-from trading.strategy.test_strategy import TestStrategy
-from trading.strategy.strategry_01 import Strategy01
+from components.strategy.strategry_01 import Strategy01
 
 if __name__ == '__main__':
   # Create a cerebro entity

@@ -75,25 +75,8 @@ class InfluxDB(feed.DataBase):
     #               |> filter(fn: (r) => r.symbol == "{self.p.symbol}")\
     #               |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value") '
     tables = query_api.query(org=self.p.org, query=query)
-    log.info('end read data')
-    log.info(datetime.now())
-    # results = []
-    # for table in tables:
-    #   for record in table.records:
-    #     data = {
-    #         "datetime": record.get_time(),
-    #         "symbol": record.values.get('symbol'),
-    #         "open": record.values.get('open'),
-    #         "high": record.values.get('high'),
-    #         "close": record.values.get('close'),
-    #         "low": record.values.get('low'),
-    #         "volume": record.values.get('volume'),
-    #     }
-    #     results.append(data)
-    log.info('end convert data')
-    # self.biter = iter(results)
+
     self.biter = iter(tables[0])
-    log.info(datetime.now())
 
   def _load(self):
     try:

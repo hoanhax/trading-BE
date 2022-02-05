@@ -1,7 +1,5 @@
-from trading.backtest.backtest import BackTest
-from trading.strategy.test_strategy import TestStrategy
-from trading.trading import Trading
-from websocket.market_handler import MarketHandler
+from components.backtest.manager import Manager
+from components.trading import Trading
 
 import socketio
 from config.enum import MainEnum
@@ -32,11 +30,11 @@ class MainNamespace(socketio.AsyncNamespace):
     # pass
 
   def on_get_market_data(self, sid, data):
-    # pass
-    market_handler = MarketHandler()
-    response = market_handler.query_data(None)
+    pass
+    # market_handler = MarketHandler()
+    # response = market_handler.query_data(None)
     # log.info(response)
-    return response
+    # return response
 
   async def on_get_candlestickets(self, sid, data):
     pass
@@ -44,15 +42,10 @@ class MainNamespace(socketio.AsyncNamespace):
   async def on_get_orders(self, sid, data):
     pass
 
-  async def on_run_trading(self, sid, data):
-    absolutePath = os.path.join(os.getcwd(), 'data/EURUSD_D1.csv')
-    trading = Trading(absolutePath, TestStrategy)
-    trading.run()
-
   async def on_run_trading_01(self, sid, data):
-    backtest = BackTest()
+    backtest = Manager()
     backtest.test01()
 
   async def on_run_trading_02(self, sid, data):
-    backtest = BackTest()
+    backtest = Manager()
     backtest.test02()
