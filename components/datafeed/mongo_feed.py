@@ -43,22 +43,18 @@ class MongoDB(feed.DataBase):
         quote_plus(self.p.username), quote_plus(self.p.password), quote_plus(self.p.host), self.p.port)
     mng_client = pymongo.MongoClient(uri)
     mng_db = mng_client[self.p.database]
-    db_collection = mng_db.get_collection(self.p.collection)
-
-    delta = timedelta(days=14)
+    db_collection = mng_db[self.p.collection]
+    delta = timedelta(days=365)
     now = datetime.now()
 
     fromdate = self.p.fromdate if self.p.fromdate else (now - delta)
     todate = self.p.todate if self.p.todate else now
-    log.info("fromdate: %s todate: %s", fromdate, todate)
     result = db_collection.find(
         {
             "$and": [{"datetime": {"$gte": fromdate}},
                      {"datetime": {"$lte": todate}}]
         }
     )
-    # for i in result:
-    #   log.info(i)
 
     self.biter = iter(result)
 

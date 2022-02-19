@@ -25,58 +25,58 @@ services:
         max-size: "20k"
         max-file: "100"
 
-  influxdb:
-    image: influxdb:latest
-    restart: unless-stopped
-    ports:
-      - '8086:8086'
-    env_file:
-      - dev.env
-    volumes:
-      - /Users/hoanha/docker/influxdb-storage:/var/lib/influxdb
-      - ../data:/home/influxdb/data
-    environment:
-      - INFLUXDB_DB=${INFLUXDB_DB}
-      - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
-      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
-    networks:
-      - trade
+  # influxdb:
+  #   image: influxdb:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - '8086:8086'
+  #   env_file:
+  #     - dev.env
+  #   volumes:
+  #     - /Users/hoanha/docker/influxdb-storage:/var/lib/influxdb
+  #     - ../data:/home/influxdb/data
+  #   environment:
+  #     - INFLUXDB_DB=${INFLUXDB_DB}
+  #     - INFLUXDB_ADMIN_USER=${INFLUXDB_USERNAME}
+  #     - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD}
+  #   networks:
+  #     - trade
 
-  chronograf:
-    image: chronograf:latest
-    restart: unless-stopped
-    ports:
-      - '127.0.0.1:8888:8888'
-    env_file:
-      - dev.env
-    volumes:
-      - /Users/hoanha/docker/chronograf-storage:/var/lib/chronograf
-    depends_on:
-      - influxdb
-    environment:
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_USERNAME=${INFLUXDB_USERNAME}
-      - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
-    networks:
-      - trade
+  # chronograf:
+  #   image: chronograf:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - '127.0.0.1:8888:8888'
+  #   env_file:
+  #     - dev.env
+  #   volumes:
+  #     - /Users/hoanha/docker/chronograf-storage:/var/lib/chronograf
+  #   depends_on:
+  #     - influxdb
+  #   environment:
+  #     - INFLUXDB_URL=http://influxdb:8086
+  #     - INFLUXDB_USERNAME=${INFLUXDB_USERNAME}
+  #     - INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD}
+  #   networks:
+  #     - trade
 
-  grafana:
-    image: grafana/grafana:latest
-    restart: unless-stopped
-    ports:
-      - '3000:3000'
-    volumes:
-      - /Users/hoanha/docker/grafana-storage:/var/lib/grafana
-      - /Users/hoanha/docker/grafana-provisioning/:/etc/grafana/provisioning
-    depends_on:
-      - influxdb
-    env_file:
-      - dev.env
-    environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
-    networks:
-      - trade
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - /Users/hoanha/docker/grafana-storage:/var/lib/grafana
+  #     - /Users/hoanha/docker/grafana-provisioning/:/etc/grafana/provisioning
+  #   depends_on:
+  #     - influxdb
+  #   env_file:
+  #     - dev.env
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+  #     - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+  #   networks:
+  #     - trade
 
   mongo:
     build:

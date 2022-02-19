@@ -14,6 +14,12 @@ class MarketEnum (Enum):
   CRYPTO = 'crypto'
 
 
+class MarketDB (Enum):
+  FOREX = 'forex'
+  STOCK = 'stock'
+  CRYPTO = 'crypto'
+
+
 class ForexSymbol (Enum):
   EURUSD = 'EURUSD'
   USDCAD = 'USDCAD'

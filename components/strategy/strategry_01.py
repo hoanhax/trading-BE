@@ -1,72 +1,17 @@
 import logging
 import os
-from components.indicator.trendline import TrendLine
-import sys
 import backtrader as bt
 
-sys.path.append('component/indicator')
+from components.base.base_strategy import BaseStrategy
+
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
 log = logging.getLogger(__name__)
 
 
-class Strategy01(bt.Strategy):
-  def log(self, txt, dt=None):
-    ''' Logging function fot this strategy'''
-    dt = dt or self.datetime.datetime(0)
-    print('%s, %s' % (dt.isoformat(), txt))
-    # log.info(self.datas[0])
-
-  def __init__(self):
-    # Keep a reference to the "close" line in the data[0] dataseries
-    self.dataclose = self.datas[0].close
-    self.datetime = self.datas[0].datetime
-
-    # To keep track of pending orders
-    self.order = None
-
-  def notify_order(self, order):
-    if order.status in [order.Submitted, order.Accepted]:
-      # Buy/Sell order submitted/accepted to/by broker - Nothing to do
-      return
-
-    # Check if an order has been completed
-    # Attention: broker could reject order if not enough cash
-    if order.status in [order.Completed]:
-      if order.isbuy():
-        self.log('BUY EXECUTED, %.2f' % order.executed.price)
-      elif order.issell():
-        self.log('SELL EXECUTED, %.2f' % order.executed.price)
-
-      self.bar_executed = len(self)
-
-    elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-      self.log('Order Canceled/Margin/Rejected')
-
-    # Write down: no pending order
-    self.order = None
-
-  # def notify_trade(self, trade):
-  #   log.debug('notify_trade')
-  #   log.debug(trade)
-  #   log.debug('--------------------------------')
-
-  # def notify_cashvalue(self, cash, value):
-  #   log.debug('notify_cashvalue')
-  #   log.debug(value)
-  #   log.debug(cash)
-  #   log.debug('--------------------------------')
-
-  # def notify_fund(self, cash, value, fundvalue, shares):
-  #   log.debug('notify_fund')
-  #   log.debug(value)
-  #   log.debug(cash)
-  #   log.debug(fundvalue)
-  #   log.debug(shares)
-  #   log.debug('--------------------------------')
-
+class Strategy01(BaseStrategy):
   def next(self):
     # Simply log the closing price of the series from the reference
-    self.log('Close, %.5f' % self.dataclose[0])
+    # self.log('Close, %.5f' % self.dataclose[0])
 
     # Check if an order is pending ... if yes, we cannot send a 2nd one
     if self.order:
@@ -80,17 +25,15 @@ class Strategy01(bt.Strategy):
         # current close less than previous close
 
         if self.dataclose[-1] < self.dataclose[-2]:
-          if self.dataclose[-2] < self.dataclose[-3]:
-            # previous close less than the previous close
+          # if self.dataclose[-2] < self.dataclose[-3]:
+          #   # previous close less than the previous close
 
-            # BUY, BUY, BUY!!! (with default parameters)
-            self.log('BUY CREATE, %.2f' % self.dataclose[0])
+          # BUY, BUY, BUY!!! (with default parameters)
+          self.log('BUY CREATE, %.2f' % self.dataclose[0])
 
-            # Keep track of the created order to avoid a 2nd order
-            self.order = self.buy()
-
+          # Keep track of the created order to avoid a 2nd order
+          self.order = self.buy()
     else:
-
       # Already in the market ... we might sell
       if len(self) >= (self.bar_executed + 5):
         # SELL, SELL, SELL!!! (with all possible default parameters)

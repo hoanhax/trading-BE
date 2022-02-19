@@ -1,5 +1,4 @@
 from components.backtest.manager import Manager
-from components.trading import Trading
 
 import socketio
 from config.enum import MainEnum
@@ -42,10 +41,10 @@ class MainNamespace(socketio.AsyncNamespace):
   async def on_get_orders(self, sid, data):
     pass
 
-  async def on_run_trading_01(self, sid, data):
-    backtest = Manager()
-    backtest.test01()
+  # async def on_run_trading_01(self, sid, data):
+  #   backtest = Manager()
+  #   backtest.test01()
 
   async def on_run_trading_02(self, sid, data):
     backtest = Manager()
-    backtest.test02()
+    await backtest.test02()

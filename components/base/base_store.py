@@ -1,22 +1,34 @@
+from log.logger import log
+from pymongo import ReturnDocument
+
+
 class BaseStore:
   def __init__(self, Model):
     self.Model = Model
 
-  def create(self, data):
+  async def create(self, data):
     model = self.Model(**data)
-    model.save()
+    await model.commit()
     return model
 
-  def list(self, limit, offset):
-    models = self.Model.objects[offset:(offset + limit)]
+  async def list(self, limit, offset):
+    models = await self.Model.find().limit(limit).skip(offset)
     return models
 
-  def update(self, objectId, data):
-    model = self.Model.objects(id=objectId).update_one(**data)
-    model.save()
+  async def update(self, objectId, data):
+    model = await self.Model.find_one_and_update(
+        {'_id': objectId},
+        {'$set': data},
+        return_document=ReturnDocument.AFTER)
     return model
 
-  def remove(self, objectId):
-    model = self.Model.objects(id=objectId)
-    model.delete()
+  async def updateUpsert(self, objectId, data):
+    model = await self.Model.find_one_and_update(
+        {'_id': objectId},
+        {'$set': data},
+        upsert=True, return_document=ReturnDocument.AFTER)
+    return model
+
+  async def remove(self, objectId):
+    model = await self.Model.find_one_and_delete({'_id': objectId})
     return model
