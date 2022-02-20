@@ -26,7 +26,7 @@ class BaseStrategy(bt.Strategy):
   def notify_order(self, order):
     self.log('notify_order')
     if (method_exists(self.p.listenter, 'notify_order')):
-      self.p.listenter.notify_order(order)
+      asyncio.create_task(self.p.listenter.notify_order(order))
 
     if order.status in [order.Submitted, order.Accepted]:
       # Buy/Sell order submitted/accepted to/by broker - Nothing to do

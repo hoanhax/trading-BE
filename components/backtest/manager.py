@@ -48,4 +48,4 @@ class Manager:
     }
     tradingHandler = Handler(tradingConfig, mongoConfig, Strategy01, cash)
     await tradingHandler.initialize()
-    tradingHandler.run()
+    await tradingHandler.run()

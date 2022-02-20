@@ -9,13 +9,7 @@ from components.datafeed.mongo_feed import MongoDB
 from components.order.store import OrderStore
 
 from log.logger import log
-from libs.unsync import unsync
 from .trading_util import convertOrder
-
-# import logging
-# from config.enum import BrokerEnum
-# logging.basicConfig(level=os.environ.get("LOGLEVEL", "DEBUG"))
-# log = logging.getLogger(__name__)
 
 
 class Handler:
@@ -28,7 +22,7 @@ class Handler:
 
     # self.initialize()
 
-  def run(self):
+  async def run(self):
     log.info('run test02')
     self.cerebro.addstrategy(self.Strategy, listenter=self)
     self.cerebro.adddata(self.data)
@@ -39,7 +33,8 @@ class Handler:
 
   """ Notify handler from strategy """
 
-  @unsync
+  # @unsync
+  # @async_to_sync
   async def notify_order(self, order):
     try:
       orderData = convertOrder(order)
